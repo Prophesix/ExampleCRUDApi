@@ -1,0 +1,18 @@
+[
+    {
+        "item": {
+            "itemID": "100",
+            "name": "Laptop",
+            "price": 1000.00,
+            "description": "Laptop computer description"
+        }
+    },
+    {
+        "item": {
+            "itemID": "101",
+            "name": "Desktop",
+            "price": 1500.00,
+            "description": "Desktop computer description"
+        }
+    }
+]
