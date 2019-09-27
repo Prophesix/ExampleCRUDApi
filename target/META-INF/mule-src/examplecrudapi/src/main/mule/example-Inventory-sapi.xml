@@ -1,10 +1,56 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns:file="http://www.mulesoft.org/schema/mule/file" xmlns="http://www.mulesoft.org/schema/mule/core"
-	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
-http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd">
-	<flow name="getAmazonData" doc:id="33b3608f-bd1c-42db-b736-9ab3a96f2650" >
-		<file:read doc:name="Read" doc:id="80461f72-cb52-4f5e-a215-d2adfd787020" />
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:file="http://www.mulesoft.org/schema/mule/file"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<flow name="updateData" doc:id="68cf84c4-27e9-444c-946a-1cb373a77cf9">
+		<choice doc:name="Copy_of_Choice" doc:id="3da8fddf-1bc5-4d41-a303-db5ebb7703c8">
+			<when expression="bestbuy provided">
+				<file:write doc:name="WriteToBestBuy" doc:id="0cf71887-a00f-4518-99a8-8bb2f2d1fae2" path="/Users/alexbiglen/Documents/Development/Workspaces/SandBox/examplecrudapi/src/main/resources/WorkingDatabase/inventoryBestBuy.json" />
+			</when>
+			<when expression="amazon provided">
+				<file:write doc:name="WriteToAmazon" doc:id="e39264f0-392f-43ea-b286-fa708cf2f07b" path="/Users/alexbiglen/Documents/Development/Workspaces/SandBox/examplecrudapi/src/main/resources/WorkingDatabase/inventoryAmazon.xml" />
+			</when>
+		</choice>
+		<logger level="INFO" doc:name="Logger" doc:id="151da839-2564-4ff4-b3dd-c09a33796f24" />
+	</flow>
+	<flow name="getData" doc:id="2a187d2f-0473-45df-832e-c216ec2fef6f" >
+		<choice doc:name="Choice" doc:id="8069402d-ee10-463c-9ad8-a3e2c1a4150b" >
+			<when expression='#[message.attributes == "Amazon"]'>
+				<file:read doc:name="ReadAmazon" doc:id="00b3be29-b8ef-4303-8466-b2ad0cfc960b" path="/Users/alexbiglen/Documents/Development/Workspaces/SandBox/examplecrudapi/src/main/resources/WorkingDatabase/inventoryAmazon.xml" />
+			</when>
+			<when expression="#[message.attributes == 'BestBuy']">
+				<file:read doc:name="ReadBestBuy" doc:id="086c7189-eac5-4b6f-9196-a8317beb3bac" path="/Users/alexbiglen/Documents/Development/Workspaces/SandBox/examplecrudapi/src/main/resources/WorkingDatabase/inventoryBestBuy.json"/>
+			</when>
+			<otherwise >
+				<scatter-gather doc:name="Scatter-Gather" doc:id="f7b23b4f-8480-452c-bf97-bc765ea74141" >
+					<route >
+						<file:read doc:name="ReadAmazon" doc:id="c870f076-5cec-4374-8bbd-3d1dfb2b8fc9" path="/Users/alexbiglen/Documents/Development/Workspaces/SandBox/examplecrudapi/src/main/resources/WorkingDatabase/inventoryAmazon.xml"/>
+						<ee:transform doc:name="Transform Message" doc:id="9d3cd1a0-bb4d-416c-87e6-5f40004368cc">
+							<ee:message>
+								<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+							</ee:message>
+						</ee:transform>
+					</route>
+					<route >
+						<file:read doc:name="ReadBestbuy" doc:id="84d62d93-e87c-4be2-8daa-8fa0c7eb63f3" path="/Users/alexbiglen/Documents/Development/Workspaces/SandBox/examplecrudapi/src/main/resources/WorkingDatabase/inventoryBestBuy.json"/>
+						<ee:transform doc:name="Transform Message" doc:id="9540fd41-fa91-49c5-83d5-74b39a535f73" >
+							<ee:message >
+								<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+							</ee:message>
+						</ee:transform>
+					</route>
+				</scatter-gather>
+			</otherwise>
+		</choice>
+		<logger level="INFO" doc:name="Logger" doc:id="24332df2-a19c-4f13-a9f0-319cb486e629" message="Get inventory data"/>
 	</flow>
 </mule>

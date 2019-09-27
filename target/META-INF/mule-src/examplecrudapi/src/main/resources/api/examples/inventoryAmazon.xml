@@ -1,4 +1,5 @@
 <inventory>
+    <sourceCompany>Amazon</sourceCompany>
     <Item>
         <itemID>1</itemID>
         <name>LaptopComputer</name>

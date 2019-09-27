@@ -1,5 +1,40 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd"></mule>
+<mule xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:file="http://www.mulesoft.org/schema/mule/file"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
+	<flow name="getItemsFromStore" doc:id="235bffbd-9a45-49e0-8f9b-f11346405597" >
+		<set-variable value="" doc:name="setStoreName" doc:id="f2831f78-3d44-436f-ad27-fbe59e730b96" variableName="code"/>
+		<set-variable value="" doc:name="setItemID" doc:id="b12f5f47-cd5b-4bad-ba94-e5c3299784cc" variableName="code"/>
+		<flow-ref doc:name="Flow Reference" doc:id="1e35bfe7-f293-49e9-bf38-3d58682fbd07" name="getData"/>
+		<ee:transform doc:name="Transform Message" doc:id="0fa62bd3-4dbd-4a38-a104-f59147ca98cc" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/java
+---
+{
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="47254d2d-4c24-44db-83ad-d1d06481df95" />
+	</flow>
+	<flow name="getAllItems" doc:id="c72a78f2-7b14-4401-b205-acc3ca89ebd9" >
+		<flow-ref doc:name="Flow Reference" doc:id="78ab981d-80bc-43ab-925c-702c13a99ff2" name="getData"/>
+		<ee:transform doc:name="Transform Message" doc:id="80cb73c5-503b-480b-9a10-5a0ea0229dfa">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+
+payload 
+		
+
+]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="e7d25a49-5979-4168-a2b9-b7900252c407" message="#[payload]"/>
+	</flow>
+</mule>

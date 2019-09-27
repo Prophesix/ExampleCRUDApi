@@ -1,0 +1,47 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<types:mule xmlns:types="http://www.mulesoft.org/schema/mule/types">
+  <types:catalog>
+    <types:type name="items" format="xml">
+      <types:example format="xml" element="inventory" location="WorkingDatabase/inventoryAmazon.xml"/>
+    </types:type>
+    <types:type name="itemsjson" format="json">
+      <types:shape format="weave" example="WorkingDatabase/inventoryBestBuy.json"><![CDATA[%dw 2.0
+
+type itemsjson = Array<{|  item: {|    itemID: String,     name: String,     price: Number {"typeId": "double"},     description: String  |}|}> {"example": "[{\"item\":{\"itemID\":\"100\",\"name\":\"Laptop\",\"price\":1000.00,\"description\":\"Laptop computer description\"}},{\"item\":{\"itemID\":\"101\",\"name\":\"Desktop\",\"price\":1500.00,\"description\":\"Desktop computer description\"}}]"}
+
+]]></types:shape>
+    </types:type>
+  </types:catalog>
+  <types:enrichment select="#80cb73c5-503b-480b-9a10-5a0ea0229dfa">
+    <types:processor-declaration>
+      <types:input-event>
+        <types:message>
+          <types:payload type="items"/>
+        </types:message>
+      </types:input-event>
+      <types:output-event>
+        <types:message>
+          <types:payload type="items"/>
+        </types:message>
+      </types:output-event>
+    </types:processor-declaration>
+  </types:enrichment>
+  <types:enrichment select="#9d3cd1a0-bb4d-416c-87e6-5f40004368cc">
+    <types:processor-declaration>
+      <types:input-event>
+        <types:message>
+          <types:payload type="items"/>
+        </types:message>
+      </types:input-event>
+    </types:processor-declaration>
+  </types:enrichment>
+  <types:enrichment select="#9540fd41-fa91-49c5-83d5-74b39a535f73">
+    <types:processor-declaration>
+      <types:input-event>
+        <types:message>
+          <types:payload type="itemsjson"/>
+        </types:message>
+      </types:input-event>
+    </types:processor-declaration>
+  </types:enrichment>
+</types:mule>

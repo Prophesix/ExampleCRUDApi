@@ -1,5 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd"></mule>
+<mule xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:file="http://www.mulesoft.org/schema/mule/file"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
+	<flow name="getAllItems" doc:id="c72a78f2-7b14-4401-b205-acc3ca89ebd9" >
+		<set-variable doc:name="Set Variable" doc:id="f511808b-90eb-4791-a650-ceaf5744a082" variableName="code" value="#[message.payload]"/>
+		<flow-ref doc:name="Flow Reference" doc:id="78ab981d-80bc-43ab-925c-702c13a99ff2" name="getData"/>
+		<flow-ref doc:name="Flow Reference" doc:id="6bbc18af-161f-4217-b933-15e58937b465" name="updateData"/>
+		<ee:transform doc:name="Transform Message" doc:id="80cb73c5-503b-480b-9a10-5a0ea0229dfa">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+
+payload 
+		
+
+]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="e7d25a49-5979-4168-a2b9-b7900252c407" message="#[payload]"/>
+	</flow>
+</mule>

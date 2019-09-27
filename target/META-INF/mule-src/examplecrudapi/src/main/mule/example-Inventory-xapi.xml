@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd ">
+<mule xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd ">
     <http:listener-config name="example-Inventory-xapi-httpListenerConfig">
         <http:listener-connection host="0.0.0.0" port="8081" />
     </http:listener-config>
@@ -7,11 +7,11 @@
     <flow name="example-Inventory-xapi-main">
         <http:listener config-ref="example-Inventory-xapi-httpListenerConfig" path="/api/*">
             <http:response statusCode="#[vars.httpStatus default 200]">
-                <http:headers>#[vars.outboundHeaders default {}]</http:headers>
+                <http:headers><![CDATA[#[vars.outboundHeaders default {}]]]></http:headers>
             </http:response>
             <http:error-response statusCode="#[vars.httpStatus default 500]">
-                <http:body>#[payload]</http:body>
-                <http:headers>#[vars.outboundHeaders default {}]</http:headers>
+                <http:body><![CDATA[#[payload]]]></http:body>
+                <http:headers><![CDATA[#[vars.outboundHeaders default {}]]]></http:headers>
             </http:error-response>
         </http:listener>
         <apikit:router config-ref="example-Inventory-xapi-config" />
@@ -167,7 +167,9 @@ output application/json
         <logger level="INFO" message="get:\store\(storeName)\item\(item_id):example-Inventory-xapi-config" />
     </flow>
     <flow name="get:\search\items:example-Inventory-xapi-config">
-        <logger level="INFO" message="get:\search\items:example-Inventory-xapi-config" />
+        <http:listener doc:name="Listener" doc:id="a62f2fa1-8851-4f80-82a6-57565a5f9455" config-ref="example-Inventory-xapi-httpListenerConfig" path="/search/items"/>
+		<flow-ref doc:name="Flow Reference" doc:id="435177ff-e1e5-4262-92d9-5b80201d427f" name="getAllItems"/>
+		<logger level="INFO" message="get:\search\items:example-Inventory-xapi-config" />
     </flow>
     <flow name="get:\store:example-Inventory-xapi-config">
         <logger level="INFO" message="get:\store:example-Inventory-xapi-config" />
